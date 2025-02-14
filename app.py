@@ -13,44 +13,54 @@ def initialize_session_state():
         st.session_state.chat_history = []
 
 def display_chat_history():
-    """Display the chat history with proper formatting"""
+    """Display the chat history in a modern chat-style UI"""
     st.subheader("Chat History")
-    for role, message in st.session_state.chat_history:
-        if role == "You":
-            st.write(f"👤 **You:** {message}")
-        else:
-            st.markdown(f"🤖 **Assistant:** {message}")
-        st.markdown("---")
+    chat_container = st.container()
+    
+    with chat_container:
+        for role, message in st.session_state.chat_history:
+            if role == "You":
+                st.markdown(f'<div style="background-color: #2b2b2b; padding: 10px; border-radius: 10px; margin: 5px 0; text-align: right;">👤 <b>You:</b> {message}</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div style="background-color: #1e1e1e; padding: 10px; border-radius: 10px; margin: 5px 0; text-align: left;">🤖 <b>Assistant:</b> {message}</div>', unsafe_allow_html=True)
 
 def main():
     st.set_page_config(
         page_title=APP_TITLE,
         page_icon="🏥",
-        layout="wide"
+        layout="wide",
     )
     
     initialize_session_state()
+    
+    with st.sidebar:
+        st.title("⚙️ Settings")
+        st.markdown("Modify your preferences here.")
+        if st.button("Clear Chat History", use_container_width=True):
+            st.session_state.chat_history = []
+            st.rerun()
     
     st.title(f"🏥 {APP_TITLE}")
     st.markdown(APP_DESCRIPTION)
     
     # Chat interface
-    col1, col2 = st.columns([3, 1])
+    st.markdown("---")
+    user_input = st.text_area(
+        "Describe your symptoms:",
+        key="user_input",
+        height=100,
+        placeholder="Type your symptoms here..."
+    )
     
-    with col1:
-        user_input = st.text_area(
-            "Describe your symptoms:",
-            key="user_input",
-            height=100
-        )
+    col1, col2 = st.columns([4, 1])
     
     with col2:
-        if st.button("Get Medical Advice", type="primary"):
+        if st.button("Get Medical Advice", use_container_width=True):
             sanitized_input = sanitize_input(user_input)
             is_valid, error_message = validate_input(sanitized_input)
             
             if is_valid:
-                with st.spinner("Analyzing your symptoms..."):
+                with st.spinner("Analyzing your symptoms... 🤖"):
                     response = st.session_state.chatbot.get_response(sanitized_input)
                     formatted_response = format_response(response)
                     
@@ -60,10 +70,7 @@ def main():
             else:
                 st.error(error_message)
     
-    if st.button("Clear Chat History"):
-        st.session_state.chat_history = []
-        st.rerun()
-    
+    st.markdown("---")
     display_chat_history()
 
 if __name__ == "__main__":
