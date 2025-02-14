@@ -3,6 +3,8 @@ from model.chatbot import MedicalChatbot
 from utils.helper import format_response, validate_input, sanitize_input
 from config.config import APP_TITLE, APP_DESCRIPTION
 
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+
 def initialize_session_state():
     """Initialize session state variables"""
     if 'chatbot' not in st.session_state:
