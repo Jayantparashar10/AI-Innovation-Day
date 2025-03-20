@@ -18,7 +18,7 @@ This project is a simple medical chatbot built using the o3-mini model and deplo
 
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/Rishav23av/AI-Innovation-Day
    cd medical-chatbot
    ```
 
